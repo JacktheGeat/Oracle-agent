@@ -1,0 +1,34 @@
+{
+  "mcpServers": {
+    "weather": {
+      "command": "/Users/laurakosseim/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/laurakosseim/Documents/Jack's coding stuff/weather",
+        "run",
+        "weather.py"
+      ]
+    },
+    "time": {
+      "command": "/Users/laurakosseim/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/laurakosseim/Documents/Jack's coding stuff/weather",
+        "run",
+        "time.py"
+      ]
+    },
+    "sqlQuery": {
+      "command": "/Users/laurakosseim/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/Users/laurakosseim/Documents/Jack's coding stuff/weather",
+        "run",
+        "sqlQuery.py"
+      ]
+    }
+  },
+  "preferences": {
+    "quickEntryShortcut": "off"
+  }
+}
