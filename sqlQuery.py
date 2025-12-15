@@ -4,15 +4,22 @@ from mcp.types import TextContent
 import csv
 import io
 from typing import List
+import json
 
 import logging
+logging.basicConfig(filename='sqlQuery.log', level=logging.INFO)
 
 import re
 
 mcp = FastMCP("time")
 DB_PATH = "test.db"
 
+
+
 logger = logging.getLogger(__name__)
+def __log(level, message, **kwargs):
+    logger.log(level, f"{message}{"" if kwargs == {} else " | " + json.dumps(kwargs)}")
+
 
 class SecurityError(Exception):
     def __init__(self, message):
@@ -33,6 +40,7 @@ SENSITIVE_COLUMNS = {
 
 def check_sensitive_columns(query: str, table_names: List[str]):
     """Check if query attempts to access sensitive columns"""
+    __log(logging.INFO, "Checking query for any sensitive columns.")
     query_lower = query.lower()
     
     for table in table_names:
@@ -45,11 +53,13 @@ def check_sensitive_columns(query: str, table_names: List[str]):
                 ]
                 for pattern in patterns:
                     if re.search(pattern, query_lower):
+                        __log(logging.WARN, "Sensitive column identified!", table=table, column=col)
                         raise SecurityError(f"Access to sensitive column '{col}' in table '{table}' is not allowed")
 
 
 def redact_results(results, cols, table_names: List[str]):
     """Replace sensitive data with [REDACTED]"""
+    __log(logging.INFO, "Checking results for sensitive data that needs redactions.")
     if not results or not cols:
         return results
     
@@ -64,6 +74,8 @@ def redact_results(results, cols, table_names: List[str]):
                     sensitive_indices.add(idx)
     
     if sensitive_indices:
+        __log(logging.WARN, "Redacting columns.")
+
         redacted_results = []
         for row in results:
             new_row = list(row)
@@ -76,9 +88,11 @@ def redact_results(results, cols, table_names: List[str]):
 
 def check_blocked_keywords(query: str):
     """Check for dangerous SQL keywords"""
+    __log(logging.INFO, "Checking blocked keywords.")
     query_upper = query.upper()
     for keyword in BLOCKED_KEYWORDS:
         if re.search(rf'\b{keyword}\b', query_upper):
+            __log(logging.WARN, "Blocked keywords identified", keyword=keyword)
             raise SecurityError(f"Operation not allowed: {keyword}")
 
 @mcp.tool()
@@ -89,6 +103,7 @@ def get_schema():
     Returns:
         Any the database schema.
     """
+    __log(logging.INFO, "Running get_schema.")
     conn = sqlite3.connect(DB_PATH) 
     result = conn.execute("SELECT sql FROM sqlite_master WHERE sql IS NOT NULL;").fetchall() 
     for r in result: print(r[0], "\n") 
@@ -108,6 +123,7 @@ def execute_sql(query: str, tables: List[str]):
     Returns:
         Any results from the query.
     """
+    __log(logging.INFO, "Running execute_sql", query = query, tables = tables)
     check_blocked_keywords(query)
     check_sensitive_columns(query, tables)
     
@@ -134,6 +150,9 @@ def export_table_csv(table: str):
     Returns:
         A csv representation of the database.
     """
+
+    __log(logging.INFO, "Running export_table", table=table)
+
     db = sqlite3.connect(DB_PATH)
     cursor = db.cursor()
     try:
@@ -160,6 +179,9 @@ def export_table_csv(table: str):
     finally:
         db.close()
 
+
+
+
 def main():
     # Initialize and run the server
     mcp.run(transport='stdio')
@@ -171,7 +193,9 @@ def main():
 
 if __name__ == "__main__":
     main()
+
     # get_schema()
+    # __log(logging.INFO, "hello?")
     # print(execute_sql("SELECT name FROM products WHERE price > 2 AND stock > 5;", tables=['products']))
     # print(execute_sql("SELECT users.name AS user_name, products.name AS product_name, orders.quantity FROM orders JOIN users ON orders.user_id = users.id JOIN products ON orders.product_id = products.id", tables=['orders']))
     # print(execute_sql("INSERT INTO users (name, email) VALUES ('jack', 'jacklynch706@gmail.com')", tables=['users']))

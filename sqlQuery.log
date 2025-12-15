@@ -1,0 +1,38 @@
+INFO:__main__:hello?
+INFO:__main__:Running execute_sql | {"query": "SELECT name FROM products WHERE price > 2 AND stock > 5;", "tables": ["products"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+INFO:__main__:Running execute_sql | {"query": "SELECT users.name AS user_name, products.name AS product_name, orders.quantity FROM orders JOIN users ON orders.user_id = users.id JOIN products ON orders.product_id = products.id", "tables": ["orders"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+INFO:__main__:Running execute_sql | {"query": "SELECT * FROM users", "tables": ["users"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+WARNING:__main__:Redacting columns.
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListPromptsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListResourcesRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running execute_sql | {"query": "SELECT * FROM products", "tables": ["products"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running execute_sql | {"query": "SELECT * FROM users", "tables": ["users"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+WARNING:__main__:Redacting columns.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running execute_sql | {"query": "SELECT * FROM orders", "tables": ["orders"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running execute_sql | {"query": "SELECT orders.id, users.name, products.name, orders.quantity, orders.order_date FROM orders JOIN users ON orders.user_id = users.id JOIN products ON orders.product_id = products.id ORDER BY orders.id", "tables": ["orders", "users", "products"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
