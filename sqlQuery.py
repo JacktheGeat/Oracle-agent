@@ -5,57 +5,123 @@ import csv
 import io
 from typing import List
 
+import logging
+
+import re
+
 mcp = FastMCP("time")
 DB_PATH = "test.db"
 
+logger = logging.getLogger(__name__)
+
+class SecurityError(Exception):
+    def __init__(self, message):
+        self.message = message
+
+BLOCKED_KEYWORDS = [
+    'DROP ', 'DELETE ', 'TRUNCATE ', 'ALTER ', 'CREATE ',
+    'INSERT ', 'UPDATE ', 'GRANT ', 'REVOKE ', 'EXEC ',
+    'EXECUTE ', 'PRAGMA ', 'ATTACH ', 'DETACH '
+]
+
+SENSITIVE_COLUMNS = {
+    'users': ['password', 'ssn', 'social_security', 'tax_id'],
+    'payments': ['card_number', 'cvv', 'account_number'],
+    'products': [],
+    'orders': [],
+}
+
+def check_sensitive_columns(query: str, table_names: List[str]):
+    """Check if query attempts to access sensitive columns"""
+    query_lower = query.lower()
+    
+    for table in table_names:
+        if table in SENSITIVE_COLUMNS:
+            for col in SENSITIVE_COLUMNS[table]:
+                patterns = [
+                    rf'\b{col}\b',
+                    rf'SELECT\s+.*\b{col}\b',
+                    rf'\b{col}\s*=',
+                ]
+                for pattern in patterns:
+                    if re.search(pattern, query_lower):
+                        raise SecurityError(f"Access to sensitive column '{col}' in table '{table}' is not allowed")
+
+
+def redact_results(results, cols, table_names: List[str]):
+    """Replace sensitive data with [REDACTED]"""
+    if not results or not cols:
+        return results
+    
+    sensitive_indices = set()
+    col_names = [col[0].lower() for col in cols]
+    
+    for table in table_names:
+        if table in SENSITIVE_COLUMNS:
+            for sensitive_col in SENSITIVE_COLUMNS[table]:
+                if sensitive_col.lower() in col_names:
+                    idx = col_names.index(sensitive_col.lower())
+                    sensitive_indices.add(idx)
+    
+    if sensitive_indices:
+        redacted_results = []
+        for row in results:
+            new_row = list(row)
+            for idx in sensitive_indices:
+                new_row[idx] = '[REDACTED]'
+            redacted_results.append(tuple(new_row))
+        return redacted_results
+    
+    return results
+
+def check_blocked_keywords(query: str):
+    """Check for dangerous SQL keywords"""
+    query_upper = query.upper()
+    for keyword in BLOCKED_KEYWORDS:
+        if re.search(rf'\b{keyword}\b', query_upper):
+            raise SecurityError(f"Operation not allowed: {keyword}")
 
 @mcp.tool()
 def get_schema():
     """
+    Gets the schema for the entire database.
+
     Returns:
         Any the database schema.
     """
-    db = sqlite3.connect(DB_PATH)
-    cursor = db.cursor()
-    
-    cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
-    tables = cursor.fetchall()
-    
-    schema_info = {}
-    for table in tables:
-        table_name = table[0]
-        cursor.execute(f"PRAGMA table_info({table_name});")
-        columns = cursor.fetchall()
-        schema_info[table_name] = [
-            {
-                "name": col[1],
-                "type": col[2],
-                "notnull": bool(col[3]),
-                "pk": bool(col[5])
-            }
-            for col in columns
-        ]
-    
-    db.close()
-    return schema_info
+    conn = sqlite3.connect(DB_PATH) 
+    result = conn.execute("SELECT sql FROM sqlite_master WHERE sql IS NOT NULL;").fetchall() 
+    for r in result: print(r[0], "\n") 
+    conn.close()
+    return result
+
 
 @mcp.tool()
-def execute_sql(query: str):
+def execute_sql(query: str, tables: List[str]):
     """
-    Executes an SQL query
+    Executes an SQL query command
 
     Args:
         query (str): A query such as 'SELECT name FROM sqlite_master'.
+        tables (List[str]): A list of tables being queried, e.g. ['users', 'products'].
 
     Returns:
         Any results from the query.
     """
+    check_blocked_keywords(query)
+    check_sensitive_columns(query, tables)
+    
     db = sqlite3.connect(DB_PATH)
-    res = db.execute(query)
-    toReturn = res.fetchall()
-    db.commit()
-    db.close()
-    return toReturn
+    
+    try:
+        res = db.execute(query)
+        results = res.fetchall()
+        
+        results = redact_results(results=results, cols=res.description, table_names=tables)
+        
+        return results
+    finally:
+        db.close()
 
 @mcp.tool()
 def export_table_csv(table: str):
@@ -66,32 +132,33 @@ def export_table_csv(table: str):
         table (str): The name of the table to be returned.
 
     Returns:
-        A csvc representation of the database.
+        A csv representation of the database.
     """
     db = sqlite3.connect(DB_PATH)
     cursor = db.cursor()
-    cursor.execute(f"SELECT * FROM {table}")
-    rows = cursor.fetchall()
-    columns = [description[0] for description in cursor.description]
+    try:
+        cursor.execute(f"SELECT * FROM {table}")
+        rows = cursor.fetchall()
+        columns = [description[0] for description in cursor.description]
 
-    file = io.StringIO()
-    writer = csv.writer(file)
-    writer.writerow(columns)
-    writer.writerows(rows)
-    csv_data = file.getvalue()
-    db.close()
-    return [
-        TextContent(
-            type="text",
-            text=f"""CSV export of '{table}' table is ready. Save this as a .csv file and make it ready for download.
-            Don't ask me to copy and save these as .csv files. Make them ready for download. I just want to click on a link and download it.
-            Dont make an interactive artifact, just a downloadable file. Save this as {table}.csv:\n\n{csv_data}"""
-        ),
-        TextContent(
-            type="text",
-            text=csv_data
-        )
-    ]
+        file = io.StringIO()
+        writer = csv.writer(file)
+        writer.writerow(columns)
+        writer.writerows(rows)
+        csv_data = file.getvalue()
+        
+        return [
+            TextContent(
+                type="text",
+                text=f"CSV export of '{table}' table is ready."
+            ),
+            TextContent(
+                type="text",
+                text=csv_data
+            )
+        ]
+    finally:
+        db.close()
 
 def main():
     # Initialize and run the server
@@ -99,7 +166,13 @@ def main():
     db = sqlite3.connect(DB_PATH)
     db.commit()
     db.close()
+    
 
 
 if __name__ == "__main__":
     main()
+    # get_schema()
+    # print(execute_sql("SELECT name FROM products WHERE price > 2 AND stock > 5;", tables=['products']))
+    # print(execute_sql("SELECT users.name AS user_name, products.name AS product_name, orders.quantity FROM orders JOIN users ON orders.user_id = users.id JOIN products ON orders.product_id = products.id", tables=['orders']))
+    # print(execute_sql("INSERT INTO users (name, email) VALUES ('jack', 'jacklynch706@gmail.com')", tables=['users']))
+    # print(execute_sql("SELECT * FROM users", ['users']))
