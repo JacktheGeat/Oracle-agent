@@ -36,3 +36,126 @@ INFO:__main__:Running execute_sql | {"query": "SELECT orders.id, users.name, pro
 INFO:__main__:Checking blocked keywords.
 INFO:__main__:Checking query for any sensitive columns.
 INFO:__main__:Checking results for sensitive data that needs redactions.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running get_schema.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running execute_sql | {"query": "SELECT id, name, email, created_at FROM users", "tables": ["users"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running execute_sql | {"query": "SELECT * FROM users", "tables": ["users"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+WARNING:__main__:Redacting columns.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running get_schema.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running execute_sql | {"query": "SELECT * FROM users", "tables": ["users"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+WARNING:__main__:Redacting columns.
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:__main__:Running execute_sql | {"query": "SELECT * FROM users", "tables": ["products"]}
+INFO:__main__:Checking blocked keywords.
+INFO:__main__:Checking query for any sensitive columns.
+INFO:__main__:Checking results for sensitive data that needs redactions.
+INFO:__main__:Running get_schema.
+INFO:__main__:Returning schema | {"schema": [["CREATE TABLE products (\nid INTEGER PRIMARY KEY,\nname TEXT NOT NULL,\nprice REAL,\ncategory TEXT,\nstock INTEGER DEFAULT 0\n)"], ["CREATE TABLE orders (\n    id INTEGER PRIMARY KEY,\n    user_id INTEGER,\n    product_id INTEGER,\n    quantity INTEGER,\n    order_date TEXT DEFAULT CURRENT_TIMESTAMP, completed BOOLEAN DEFAULT 0,\n    FOREIGN KEY (user_id) REFERENCES users(id)\n    FOREIGN KEY (product_id) REFERENCES products(id)\n)"], ["CREATE TABLE \"users\" (\nid INTEGER PRIMARY KEY,\nname TEXT NOT NULL,\nemail TEXT UNIQUE,\ncreated_at TEXT DEFAULT CURRENT_TIMESTAMP\n, password TEXT NOT NULL)"]]}
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:__main__:Running get_schema.
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListPromptsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListResourcesRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListPromptsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListResourcesRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListPromptsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListResourcesRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListPromptsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListResourcesRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListToolsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListPromptsRequest
+INFO:mcp.server.lowlevel.server:Processing request of type ListResourcesRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
+INFO:mcp.server.lowlevel.server:Processing request of type CallToolRequest
