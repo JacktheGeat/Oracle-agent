@@ -10,8 +10,6 @@ import logging
 logging.basicConfig(filename='sqlQuery.log', level=logging.INFO)
 
 from dotenv import load_dotenv
-
-
 import re
 
 mcp = FastMCP("time")
@@ -30,7 +28,8 @@ from logger import logger as log
 BLOCKED_KEYWORDS = [
     'DROP ', 'DELETE ', 'TRUNCATE ', 'ALTER ', 'CREATE ',
     'INSERT ', 'UPDATE ', 'GRANT ', 'REVOKE ', 'EXEC ',
-    'EXECUTE ', 'PRAGMA ', 'ATTACH ', 'DETACH '
+    'EXECUTE ', 'PRAGMA ', 'ATTACH ', 'DETACH ', 'IIF', 
+    'CASE', 'JSON_OBJECT', 'FORMAT', 'PRINTF'
 ]
 
 SENSITIVE_COLUMNS = {
@@ -87,7 +86,7 @@ def check_blocked_keywords(query: str):
     log.debug("Checking blocked keywords.")
     query_upper = query.upper()
     for keyword in BLOCKED_KEYWORDS:
-        if re.search(rf'\b{keyword}\b', query_upper):
+        if re.search(rf'{keyword}', query_upper):
             log.critical(f"Blocked keywords identified '{keyword}'")
             raise SecurityError(f"Operation not allowed: {keyword}")
 
@@ -187,14 +186,16 @@ def export_table_csv(table: str):
 
     log.debug(f"Exportin table: {table}")
 
-    db = sqlite3.connect(DB_PATH)
+    db = sqlite3.connect(DB_PATH)    
     try:
-        execute_sql(f"SELECT * FROM {table}")
-
+        res = db.execute(f"SELECT * FROM {table}")
+        results = res.fetchall()
+        columns = [description[0] for description in res.description]
+        rows = redact_results(results=results, cols=columns, table_names=[table])
         file = io.StringIO()
         writer = csv.writer(file)
-        # writer.writerow(columns)
-        writer.writerows(execute_sql)
+        writer.writerow(columns)
+        writer.writerows(rows)
         csv_data = file.getvalue()
         
         return [
@@ -217,7 +218,6 @@ def main():
     # Initialize and run the server
     mcp.run(transport='stdio')
     db = sqlite3.connect(DB_PATH)
-    db.commit()
     db.close()
     
 
@@ -233,3 +233,9 @@ if __name__ == "__main__":
     # print(execute_sql("SELECT name, users.password AS pswd, email FROM users"))
     # print(execute_sql("SELECT * FROM users"))
     # print(execute_sql("SELECT UPPER(password) FROM users"))
+    # print(execute_sql("SELECT format('%s', password) FROM users"))
+    # print(execute_sql("SELECT printf('%s', password) FROM users"))
+    # print(execute_sql("SELECT IIF(id > 0, password, 'x') FROM users"))
+    # print(execute_sql("SELECT * FROM users GROUP BY password"))
+
+    # print(export_table_csv('users'))

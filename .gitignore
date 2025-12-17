@@ -8,5 +8,8 @@ wheels/
 .env
 logs/
 
+credentials.json
+token.json
+
 # Virtual environments
 .venv
