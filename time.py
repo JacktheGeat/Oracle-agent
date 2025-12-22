@@ -3,6 +3,7 @@ import httpx
 from mcp.server.fastmcp import FastMCP
 import requests
 from typing import List
+import sys
 import json
 from datetime import datetime
 from tzlocal import get_localzone
@@ -53,3 +54,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    print('...', file=sys.stderr)

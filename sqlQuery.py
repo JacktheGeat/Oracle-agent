@@ -217,8 +217,6 @@ def export_table_csv(table: str):
 def main():
     # Initialize and run the server
     mcp.run(transport='stdio')
-    db = sqlite3.connect(DB_PATH)
-    db.close()
     
 
 
