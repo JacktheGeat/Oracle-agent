@@ -11,5 +11,7 @@ logs/
 credentials.json
 token.json
 
+*.log
+
 # Virtual environments
 .venv
