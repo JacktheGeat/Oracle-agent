@@ -11,7 +11,7 @@ from logger import logger as log
 import os
 from dotenv import load_dotenv
 load_dotenv()
- 
+
 class Agent():
     CO_API_KEY = os.getenv("CO_API_KEY")
     client = cohere.ClientV2(api_key=CO_API_KEY)
