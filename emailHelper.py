@@ -20,7 +20,9 @@ from typing import List
 
 
 import logging
-logging.basicConfig(filename='sqlQuery.log', level=logging.INFO)
+logging.basicConfig(filename='emailer.log', level=logging.INFO)
+from logger import logger as log
+
 
 from google.oauth2 import id_token
 from google.auth.transport import requests
@@ -34,9 +36,27 @@ SCOPES = os.getenv("SCOPES").split(",")
 
 mcp = FastMCP("emailer")
 
+log.debug("Acquiring Email API credentials")
 CREDS = None
-SERVICE = None
-USEREMAIL = None
+# The file token.json stores the user's access and refresh tokens, and is
+# created automatically when the authorization flow completes for the first
+# time.
+if os.path.exists("token.json"):
+    CREDS = Credentials.from_authorized_user_file("token.json", SCOPES)
+# If there are no (valid) credentials available, let the user log in.
+if not CREDS or not CREDS.valid:
+    if CREDS and CREDS.expired and CREDS.refresh_token:
+        CREDS.refresh(Request())
+    else:
+        flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
+        CREDS = flow.run_local_server(port=0)
+    # Save the credentials for the next run
+    with open("token.json", "w") as token:
+        token.write(CREDS.to_json())
+SERVICE = build("gmail", "v1", credentials=CREDS)
+
+USEREMAIL = SERVICE.users().getProfile(userId="me").execute()['emailAddress']
+
 
 def parse_icalendar_to_json(ical_string):
     """
@@ -249,6 +269,7 @@ def list_unread():
     Returns:
       List[dict]: A list of dictionary objects containing a summary of all unread emails.
     """
+    log.debug("Listing unread emails")
     toReturn = []
     for message in get_unread_ids():
         msg = (
@@ -306,6 +327,7 @@ def draft_reply(messageId: str, threadId: str, body:str, recieverAddr: str, subj
     Raises:
       HttpError: Upon invalid email address.
     """
+    log.debug("Drafting reply")
     global SERVICE
     try:
         if subject == None:
@@ -355,7 +377,7 @@ def draft_email(reciever: str, subject: str, body: str)-> dict:
     # created automatically when the authorization flow completes for the first
     # time.
     # If there are no (valid) credentials available, let the user log in.
-
+    log.debug("Drafting email")
     try:
         message=EmailMessage() 
         message['From'] = USEREMAIL 
@@ -394,6 +416,7 @@ def send_draft(draftId:str):
     Returns:
       Dict: Containing the draftId and message.
     """
+    log.debug("Sending draft")
     try:
         # Send the draft
         message = SERVICE.users().drafts().send(
@@ -412,25 +435,7 @@ def main():
     mcp.run(transport='stdio')
 
 if __name__ == "__main__":
-    CREDS = None
-    # The file token.json stores the user's access and refresh tokens, and is
-    # created automatically when the authorization flow completes for the first
-    # time.
-    if os.path.exists("token.json"):
-        CREDS = Credentials.from_authorized_user_file("token.json", SCOPES)
-    # If there are no (valid) credentials available, let the user log in.
-    if not CREDS or not CREDS.valid:
-        if CREDS and CREDS.expired and CREDS.refresh_token:
-            CREDS.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file("credentials.json", SCOPES)
-            CREDS = flow.run_local_server(port=0)
-        # Save the credentials for the next run
-        with open("token.json", "w") as token:
-            token.write(CREDS.to_json())
-    SERVICE = build("gmail", "v1", credentials=CREDS)
-
-    USEREMAIL = SERVICE.users().getProfile(userId="me").execute()['emailAddress']
+    
 
 
     main()

@@ -5,7 +5,9 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "aisuite[cohere]>=0.1.6",
     "anthropic>=0.75.0",
+    "cohere>=5.20.1",
     "datetime>=6.0",
     "fastmcp>=2.14.1",
     "google-api-python-client>=2.187.0",
