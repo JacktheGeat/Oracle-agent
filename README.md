@@ -6,7 +6,7 @@ The time was short, but I learned a lot about AI such as building and implementi
 
 I started off the Internship with a crash course on how AI and Neural Networks function, and then immediately was tasked to learn and implement tools using Cohere, a free Python AI resource. 
 
-I started off making a simple tool that allows it to get the [current time based off timezone](https://github.com/JacktheGeat/Oracle-agent/blob/gh-pages/MCPtime.py), as well as [get the weather in a city](https://github.com/JacktheGeat/Oracle-agent/blob/gh-pages/weather.py).
+I started off making a simple tool that allows it to get the current time based off timezone, as well as get the weather in a city.
 
 I was then taught how to implement a local MCP server on Claude to allow it access to the tools I just made. I was then instructed to implement more complex tools, such as SQL commands in a small database, but also SQL protections, preventing access to sensitive data like passwords from reaching the AI and malicious actors.
 
