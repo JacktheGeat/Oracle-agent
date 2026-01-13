@@ -1,7 +1,4 @@
-from typing import Any
-import httpx
 from mcp.server.fastmcp import FastMCP
-import requests
 from typing import List
 import sys
 import json

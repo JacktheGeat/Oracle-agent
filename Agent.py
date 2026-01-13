@@ -1,7 +1,7 @@
 import cohere
 import json
 
-import weather, emailHelper, calendarHelper, time
+import weather, emailHelper, calendarHelper, MCPtime
 
 import logging
 logging.basicConfig(filename='agent.log', level=logging.DEBUG)
@@ -41,9 +41,11 @@ class Agent():
             {
                 "role": "system", 
                 "content": """You are a helpful assistant.
-                When you find a meeting or appointment in an unread email, check the calendar to see if there is a conflict.
-                If there is no conflict, you should add it to the calendar. You do not need permission.
-                If there is a conflict, draft an email reply explaining that the user is already busy. You do not need permission."""
+                Get the current time, defaulting to the timezone of 'America/New_York'.
+                Check the unread emails and do the following:
+                * When you find a meeting or appointment in an unread email, check the calendar to see if there is a conflict.
+                * If there is no conflict, you should add it to the calendar. You do not need permission.
+                * If there is a conflict, draft an email reply explaining that the user is already busy. You do not need permission to write a draft."""
             },
             {"role": "user", "content": prompt}  # Add user message to existing list
         ]
@@ -51,37 +53,39 @@ class Agent():
 
         numIterations = 0
         while numIterations <self.loopTimes:
-            response = self.client.chat(
-                model=model,
-                messages=messages,
-                tools=tools,
-            )
-            print(f"Finish reason: {response.finish_reason}")
+            # try:
+                response = self.client.chat(
+                    model=model,
+                    messages=messages,
+                    tools=tools,
+                )
+                print(f"Finish reason: {response.finish_reason}")
 
-            msg = response.message
-    
-            if msg.content:
-                log.debug("Message Content found")
+                msg = response.message
+        
+                if msg.content:
+                    log.debug("Message Content found")
 
-                for content in msg.content:
-                    print(content.text)
-    
-            if msg.tool_calls:
-                log.debug("Tool call made")
+                    for content in msg.content:
+                        print(content.text)
+        
+                if msg.tool_calls:
+                    log.debug("Tool call made")
 
-                for tool_call in msg.tool_calls:
-                    # print(f"tool_name:{tool_call.function.name} tool_function:{tool_call.function.arguments}")
-                    result = handle_tool_call(tool_call)
+                    for tool_call in msg.tool_calls:
+                        # print(f"tool_name:{tool_call.function.name} tool_function:{tool_call.function.arguments}")
+                        result = handle_tool_call(tool_call)
 
-                    messages.append(msg)
-                    messages.append(self.create_tool_response_message(tool_call, result))
-            else:
-                print ("No content retuned")
-                message = input()
-                if message == "": return
-                messages.append({"role": "user", "content": message})
+                        messages.append(msg)
+                        messages.append(self.create_tool_response_message(tool_call, result))
+                else:
+                    message = input()
+                    if message == "": return
+                    messages.append({"role": "user", "content": message})
 
-            numIterations += 1
+                numIterations += 1
+            # except: 
+
 
             
 
@@ -158,7 +162,22 @@ def get_available_tools():
                     "required": ["summary", "start", "end"]
                 }
             }
+        },
+        {
+            "type": "function",
+            "function":{
+                "name": "get_timezone",
+                "description": "Get current time from a list of timezones.",
+                "parameters": {
+                    "type": "object",
+                    "properties": {
+                        "timezones": {"type": "array", "description": "A list of timezones."},
+                    },
+                    "required": ["timezones"]
+                }
+            }
         }
+
     ]
  
  
@@ -170,7 +189,8 @@ def handle_tool_call(tool_call):
         "list_unread": emailHelper.list_unread,
         "draft_reply": emailHelper.draft_reply,
         "check_calendar": calendarHelper.list_events,
-        "create_calendar_event": calendarHelper.create_event
+        "create_calendar_event": calendarHelper.create_event,
+        "get_timezone": MCPtime.get_current_time_in_time_zone
     }
  
     return tools_map[function_name](**arguments)
