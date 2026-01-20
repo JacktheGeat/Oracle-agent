@@ -2,7 +2,7 @@
 
 This Repo contains the files and projects I made from a winter internship at Oracle. I then had a presentation that I gave where I went through a mock tech demo showcasing the AI agent I made during my time there.
 
-[<img src="https://jackthegeat.github.io/Oracle-agent/src/Presentation.png" width="600" height="300"/>](<video src="https://jackthegeat.github.io/Oracle-agent/src/Presentation.mp4" width="640" height="480" controls></video>)
+<video src="https://jackthegeat.github.io/Oracle-agent/src/Presentation.mp4" width="640" height="480" controls></video>
 
 The time was short, but I learned a lot about AI such as building and implementing tools, what Model Context Protocol (MCP) is and why it is important, and how to implement an Agent capable of using the tools given to it to perform complex tasks.
 
