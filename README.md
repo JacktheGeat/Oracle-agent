@@ -2,6 +2,8 @@
 
 This Repo contains the files and projects I made from a winter internship at Oracle. I then had a presentation that I gave where I went through a mock tech demo showcasing the AI agent I made during my time there.
 
+[Tech demo recording](/Presentation.mp4)
+
 The time was short, but I learned a lot about AI such as building and implementing tools, what Model Context Protocol (MCP) is and why it is important, and how to implement an Agent capable of using the tools given to it to perform complex tasks.
 
 I started off the Internship with a crash course on how AI and Neural Networks function, and then immediately was tasked to learn and implement tools using Cohere, a free Python AI resource. 
