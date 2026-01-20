@@ -12,8 +12,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
-import logging
-logging.basicConfig(filename='calendar.log', level=logging.INFO)
+# logging.basicConfig(filename='calendar.log', level=logging.INFO)
 from logger import logger as log
 
 

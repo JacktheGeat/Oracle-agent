@@ -26,8 +26,8 @@ else:
 LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
 
 # Print log file location to console so user knows where logs are
-print(f"📝 Logging to: {LOG_FILE}")
-print(f"📊 Log level: {os.getenv('LOG_LEVEL', 'DEBUG')}")
+print(f" Logging to: {LOG_FILE}")
+print(f" Log level: {os.getenv('LOG_LEVEL', 'LOG_TO_CONSOLE')}")
 print("-" * 80)
 
 # ------------------------------------------------------------------

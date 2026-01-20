@@ -20,7 +20,7 @@ from typing import List
 
 
 import logging
-logging.basicConfig(filename='emailer.log', level=logging.INFO)
+# logging.basicConfig(filename='emailer.log', level=logging.INFO)
 from logger import logger as log
 
 
@@ -254,9 +254,7 @@ def get_unread_ids():
 
         if not messages:
             print("No messages found.")
-            return 
-
-        toReturn = []
+            return []
         return messages
 
     except HttpError as error:
@@ -271,6 +269,8 @@ def list_unread():
     """
     log.debug("Listing unread emails")
     toReturn = []
+    unreadIDs=get_unread_ids()
+    if unreadIDs ==None: toReturn = []
     for message in get_unread_ids():
         msg = (
             SERVICE.users().messages().get(userId="me", id=message["id"]).execute()
@@ -402,7 +402,6 @@ def draft_email(reciever: str, subject: str, body: str)-> dict:
         print(f"An error occurred: {error}")
         draft = None
 
-    print(draft)
     return draft
 
 @mcp.tool()
@@ -435,8 +434,7 @@ def main():
     mcp.run(transport='stdio')
 
 if __name__ == "__main__":
-    
-
+    # get_unread_ids()
 
     main()
 

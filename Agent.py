@@ -1,10 +1,11 @@
 import cohere
 import json
+import time
 
 import weather, emailHelper, calendarHelper, MCPtime
 
 import logging
-logging.basicConfig(filename='agent.log', level=logging.DEBUG)
+logging.basicConfig(filename='agent.log', level=logging.CRITICAL)
 from logger import logger as log
 
 
@@ -18,7 +19,7 @@ class Agent():
 
     def __init__(self, loopTimes: int = 10):
         log.debug("starting Agent")
-        self.loopTimes = 10
+        self.loopTimes = loopTimes
 
     def create_tool_response_message(self, tool_call, result):
         tool_content = []
@@ -53,7 +54,7 @@ class Agent():
 
         numIterations = 0
         while numIterations <self.loopTimes:
-            # try:
+            try:
                 response = self.client.chat(
                     model=model,
                     messages=messages,
@@ -79,12 +80,27 @@ class Agent():
                         messages.append(msg)
                         messages.append(self.create_tool_response_message(tool_call, result))
                 else:
-                    message = input()
-                    if message == "": return
-                    messages.append({"role": "user", "content": message})
+                    time.sleep(120)
+                    messages.append({
+                        "role": "system", 
+                        "content": """
+                        Get the current time, defaulting to the timezone of 'America/New_York'.
+                        Check again for unread emails.
+                        Do the following only if the email in question was recieved within the last 5 minutes:
+                        * When you find a meeting or appointment in an unread email, check the calendar to see if there is a conflict.
+                        * If there is no conflict, you should add it to the calendar. You do not need permission.
+                        * If there is a conflict, draft an email reply explaining that the user is already busy. You do not need permission to write a draft."""
+                    })
 
                 numIterations += 1
-            # except: 
+            except Exception as e:
+                log.error(f"{e}")
+                print(type(e))
+                messages.append({"role": "system", "content": f"{str(e)}"})
+
+            # except HTTP: 
+            finally:
+                time.sleep(10)
 
 
             
@@ -184,7 +200,7 @@ def get_available_tools():
 def handle_tool_call(tool_call):
     function_name = tool_call.function.name
     arguments = json.loads(tool_call.function.arguments)
-    print(arguments)
+    # print(arguments)
     tools_map = {
         "list_unread": emailHelper.list_unread,
         "draft_reply": emailHelper.draft_reply,
