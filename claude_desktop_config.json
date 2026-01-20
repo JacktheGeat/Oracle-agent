@@ -1,0 +1,54 @@
+{
+  "mcpServers": {
+    "weather": {
+      "command": "/home/jacklynch/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/home/jacklynch/Documents/Oracle-internship",
+        "run",
+        "weather.py"
+      ]
+    },
+    "time": {
+      "command": "/home/jacklynch/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/home/jacklynch/Documents/Oracle-internship",
+        "run",
+        "MCPtime.py"
+      ]
+    },
+    "sqlQuery": {
+      "command": "/home/jacklynch/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/home/jacklynch/Documents/Oracle-internship",
+        "run",
+        "sqlQuery.py"
+      ]
+    },
+    "emailer": {
+      "command": "/home/jacklynch/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/home/jacklynch/Documents/Oracle-internship",
+        "run",
+        "emailHelper.py"
+      ]
+    },
+    "calendar": {
+      "command": "/home/jacklynch/.local/bin/uv",
+      "args": [
+        "--directory",
+        "/home/jacklynch/Documents/Oracle-internship",
+        "run",
+        "calendarHelper.py"
+      ]
+    }
+  },
+  "preferences": {
+    "quickEntryShortcut": "off",
+    "menuBarEnabled": false
+  },
+  "globalShortcut": ""
+}
