@@ -29,7 +29,7 @@ def get_current_time_in_time_zone(timezones: List[str]) -> List[str]:
                     tz = get_localzone()
                 else:
                     tz = ZoneInfo(tz_name)
-                print(tz)
+                # print(tz)
                 current_time = datetime.now(tz)
                 result.append(json.dumps({'time zone':tz_name, 'current date':current_time.strftime('%B %d, %Y'), 'current time': current_time.strftime('%I:%M %p') }))
             except ZoneInfoNotFoundError:

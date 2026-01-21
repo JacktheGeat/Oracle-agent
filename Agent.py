@@ -5,7 +5,7 @@ import time
 import weather, emailHelper, calendarHelper, MCPtime
 
 import logging
-logging.basicConfig(filename='agent.log', level=logging.CRITICAL)
+logging.basicConfig(filename='agent.log', level=logging.DEBUG)
 from logger import logger as log
 
 
@@ -53,16 +53,17 @@ class Agent():
         tools = get_available_tools()
 
         numIterations = 0
-        while numIterations <self.loopTimes:
+        while numIterations <self.loopTimes or self.loopTimes == -1:
             try:
                 response = self.client.chat(
                     model=model,
                     messages=messages,
                     tools=tools,
                 )
-                print(f"Finish reason: {response.finish_reason}")
+                # print(f"Finish reason: {response.finish_reason}")
 
                 msg = response.message
+                messages.append(msg)
         
                 if msg.content:
                     log.debug("Message Content found")
@@ -77,7 +78,6 @@ class Agent():
                         # print(f"tool_name:{tool_call.function.name} tool_function:{tool_call.function.arguments}")
                         result = handle_tool_call(tool_call)
 
-                        messages.append(msg)
                         messages.append(self.create_tool_response_message(tool_call, result))
                 else:
                     time.sleep(120)
@@ -214,5 +214,5 @@ def handle_tool_call(tool_call):
 
 if __name__ == "__main__":
     # my_agent("can you look through my unread emails, and if one is inviting me to a meeting, draft a reply that I will make time for it")
-    email_calendar_agent = Agent(10)
+    email_calendar_agent = Agent(-1)
     email_calendar_agent.call("Can you use a tool call to list my unread emails")
