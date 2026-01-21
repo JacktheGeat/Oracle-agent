@@ -80,13 +80,13 @@ class Agent():
 
                         messages.append(self.create_tool_response_message(tool_call, result))
                 else:
-                    time.sleep(120)
+                    time.sleep(240)
                     messages.append({
                         "role": "system", 
                         "content": """
                         Get the current time, defaulting to the timezone of 'America/New_York'.
                         Check again for unread emails.
-                        Do the following only if the email in question was recieved within the last 5 minutes:
+                        Do the following only if the email in question was recieved within the last 10 minutes:
                         * When you find a meeting or appointment in an unread email, check the calendar to see if there is a conflict.
                         * If there is no conflict, you should add it to the calendar. You do not need permission.
                         * If there is a conflict, draft an email reply explaining that the user is already busy. You do not need permission to write a draft."""
@@ -100,7 +100,7 @@ class Agent():
 
             # except HTTP: 
             finally:
-                time.sleep(10)
+                time.sleep(0)
 
 
             
