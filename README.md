@@ -6,7 +6,7 @@ This Repo contains the files and projects I made from a winter internship at Ora
 You will need a few things I do not provide:
 * credentials.json: A google API service credentials. It should have access to email and calendar actions.
 * .env: A environment file that contains sensitive information. I have a sample available that contains the names of variables, though they are unset.
- * this means you will need to get an API key for cohere. this is free with rate limits.
+  * This means you will need to get an API key for cohere. this is free with rate limits.
 * token.json: created automatically, this validates the google API service.
 
 Once you have all the files and permissions allowed, You simply need to run the Agent.py file. It will look through your emails and calendar and hopefully will work without much issue.
@@ -23,3 +23,4 @@ I started off making a simple tool that allows it to get the current time based 
 I was then taught how to implement a local MCP server on Claude to allow it access to the tools I just made. I was then instructed to implement more complex tools, such as SQL commands in a small database, but also SQL protections, preventing access to sensitive data like passwords from reaching the AI and malicious actors.
 
 For my final project, I made two new tools that use the gmail and google calendar API, and then created an Agent that checks unread emails for meetings or appointments, and then cross-references with my calendar for conflicts. If there are any, it will draft an email and notify me, otherwise, it will add this new event to my calendar.
+
