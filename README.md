@@ -2,6 +2,16 @@
 
 This Repo contains the files and projects I made from a winter internship at Oracle. I then had a presentation that I gave where I went through a mock tech demo showcasing the AI agent I made during my time there.
 
+## How to use the Agent:
+You will need a few things I do not provide:
+* credentials.json: A google API service credentials. It should have access to email and calendar actions.
+* .env: A environment file that contains sensitive information. I have a sample available that contains the names of variables, though they are unset.
+ * this means you will need to get an API key for cohere. this is free with rate limits.
+* token.json: created automatically, this validates the google API service.
+
+Once you have all the files and permissions allowed, You simply need to run the Agent.py file. It will look through your emails and calendar and hopefully will work without much issue.
+
+## Thank you Mr. Wakim and Oracle:
 [<img src="https://jackthegeat.github.io/Oracle-agent/src/Presentation.png" width="600" height="300"/>](https://jackthegeat.github.io/Oracle-agent/src/Presentation.mp4)
 
 The time was short, but I learned a lot about AI such as building and implementing tools, what Model Context Protocol (MCP) is and why it is important, and how to implement an Agent capable of using the tools given to it to perform complex tasks.
