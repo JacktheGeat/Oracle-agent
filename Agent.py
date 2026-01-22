@@ -14,8 +14,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Agent():
-    CO_API_KEY = os.getenv("CO_API_KEY")
-    client = cohere.ClientV2(api_key=CO_API_KEY)
+    COHERE_API_KEY = os.getenv("COHERE_API_KEY")
+    client = cohere.ClientV2(api_key=COHERE_API_KEY)
 
     def __init__(self, loopTimes: int = 10):
         log.debug("starting Agent")
@@ -45,8 +45,8 @@ class Agent():
                 Get the current time, defaulting to the timezone of 'America/New_York'.
                 Check the unread emails and do the following:
                 * When you find a meeting or appointment in an unread email, check the calendar to see if there is a conflict.
-                * If there is no conflict, you should add it to the calendar. You do not need permission.
-                * If there is a conflict, draft an email reply explaining that the user is already busy. You do not need permission to write a draft."""
+                * If there is no conflict, you should add it to the calendar using the tool provided. You do not need permission.
+                * If there is a conflict, draft an email reply using the tool provided explaining that the user is already busy. You do not need permission to write a draft."""
             },
             {"role": "user", "content": prompt}  # Add user message to existing list
         ]
@@ -89,7 +89,7 @@ class Agent():
                         Do the following only for emails recieved within the last hour:
                         * When you find a meeting or appointment in an unread email, check the calendar to see if there is a conflict.
                         * If there is no conflict, you should add it to the calendar. You do not need permission.
-                        * If there is a conflict, draft an email reply explaining that the user is already busy. You do not need permission to write a draft."""
+                        * If there is a conflict, draft an email reply using the tool provided explaining that the user is already busy. You do not need permission to write a draft."""
                     })
 
                 numIterations += 1

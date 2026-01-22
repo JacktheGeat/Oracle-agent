@@ -19,23 +19,25 @@ from logger import logger as log
 # If modifying these scopes, delete the file token.json.
 load_dotenv()
 SCOPES = os.getenv("SCOPES").split(",")
+TOKEN_PATH=os.getenv("TOKEN_PATH")
+CREDENTIALS_PATH=os.getenv("CREDENTIALS_PATH")
 
 mcp = FastMCP("calendar")
 
 log.debug("Acquiring Calendar API credentials")
-if os.path.exists("token.json"):
-  CREDS = Credentials.from_authorized_user_file("token.json", SCOPES)
+if os.path.exists(TOKEN_PATH):
+  CREDS = Credentials.from_authorized_user_file(TOKEN_PATH, SCOPES)
 # If there are no (valid) credentials available, let the user log in.
 if not CREDS or not CREDS.valid:
   if CREDS and CREDS.expired and CREDS.refresh_token:
     CREDS.refresh(Request())
   else:
     flow = InstalledAppFlow.from_client_secrets_file(
-        "credentials.json", SCOPES
+        CREDENTIALS_PATH, SCOPES
     )
     CREDS = flow.run_local_server(port=0)
   # Save the credentials for the next run
-  with open("token.json", "w") as token:
+  with open(TOKEN_PATH, "w") as token:
     token.write(CREDS.to_json())    
 SERVICE = build("calendar", "v3", credentials=CREDS)
   # Initialize and run the server
