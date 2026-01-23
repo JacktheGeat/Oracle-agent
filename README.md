@@ -1,7 +1,7 @@
 # [AI Agent Developed at Oracle Internship](/)
 
 This Repo contains the files and projects I made from a winter internship at Oracle. I then had a presentation that I gave where I went through a mock tech demo showcasing the AI agent I made during my time there.
-<video src="https://jackthegeat.github.io/Oracle-agent/src/Presentation.mp4" width="640" height="480" controls></video>
+<video src="https://jackthegeat.github.io/Email-Scheduling-AI/src/Presentation.mp4" width="640" height="480" controls></video>
 
 
 
