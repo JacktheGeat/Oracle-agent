@@ -12,7 +12,7 @@ You will need a few things I do not provide:
 Once you have all the files and permissions allowed, You simply need to run the Agent.py file. It will look through your emails and calendar and hopefully will work without much issue.
 
 ## Thank you Mr. Wakim and Oracle:
-[<img src="https://jackthegeat.github.io/Oracle-agent/src/Presentation.png" width="600" height="300"/>](https://jackthegeat.github.io/Oracle-agent/src/Presentation.mp4)
+[<img src="https://jackthegeat.github.io/Email-Scheduling-AI/src/Presentation.png" width="600" height="300"/>](https://jackthegeat.github.io/Email-Scheduling-AI/src/Presentation.mp4)
 
 The time was short, but I learned a lot about AI such as building and implementing tools, what Model Context Protocol (MCP) is and why it is important, and how to implement an Agent capable of using the tools given to it to perform complex tasks.
 
@@ -23,5 +23,6 @@ I started off making a simple tool that allows it to get the current time based 
 I was then taught how to implement a local MCP server on Claude to allow it access to the tools I just made. I was then instructed to implement more complex tools, such as SQL commands in a small database, but also SQL protections, preventing access to sensitive data like passwords from reaching the AI and malicious actors.
 
 For my final project, I made two new tools that use the gmail and google calendar API, and then created an Agent that checks unread emails for meetings or appointments, and then cross-references with my calendar for conflicts. If there are any, it will draft an email and notify me, otherwise, it will add this new event to my calendar.
+
 
 
